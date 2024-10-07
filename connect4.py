@@ -57,10 +57,49 @@ def playerTurn():
 			print("                                                 This column is full!")
 	conArray[row][choice] = "X"
 
+def checkDefense():
+	for y in range(7):
+		for x in range(5, 2, -1):
+			if conArray[x][y] == "X":
+				if conArray[x - 1][y] == "X" and conArray[x - 2][y] == "X" and conArray[x - 3][y] != "X" and conArray[x - 3][y] != "O":
+					return x - 3, y
+	for x in range(6):
+		for y in range(4):
+			if conArray[x][y] == "X":
+				if conArray[x][y + 1] == "X" and conArray[x][y + 2] == "X" and conArray[x][y + 3] != "X" and conArray[x][y + 3] != "O":
+					if x != 5:
+						if conArray[x + 1][y + 3] == "X" or conArray[x + 1][y + 3] == "O":
+							return x, y + 3
+					else:
+						return x, y + 3
+	for x in range(6):
+		for y in range(6, 2, -1):
+			if conArray[x][y] == "X":
+				if conArray[x][y - 1] == "X" and conArray[x][y - 2] == "X" and conArray[x][y - 3] != "X" and conArray[x][y - 3] != "O":
+					if x != 5:
+						if conArray[x + 1][y - 3] == "X" or conArray[x + 1][y - 3] == "O":
+							return x, y - 3
+					else:
+						return x, y - 3
+	for x in range(5, 2, -1):
+		for y in range(4):
+			if conArray[x][y] == "X":
+				if conArray[x - 1][y + 1] == "X" and conArray[x - 2][y + 2] == "X" and conArray[x - 3][y + 3] != "X" and conArray[x - 3][y + 3] != "O":
+					if conArray[x - 2][y - 3] == "X" or conArray[x - 2][y - 3] == "O":
+							return x - 3, y + 3
+	for x in range(5, 2, -1):
+		for y in range(3, 7):
+			if conArray[x][y] == "X":
+				if conArray[x - 1][y - 1] == "X" and conArray[x - 2][y - 2] == "X" and conArray[x - 3][y - 3] != "X" and conArray[x - 3][y - 3] != "O":
+					if conArray[x - 2][y - 3] == "X" or conArray[x - 2][y - 3] == "O":
+							return x - 3, y - 3
+	return -1, -1
+
 def computerTurn():
 	print("                                               Computer is thinking...")
 	time.sleep(1)
 	row = -1
+	row, choice = checkDefense()
 	while row == -1:
 		choice = random.randint(0, 6)
 		row = checkOpen(choice)
@@ -141,6 +180,7 @@ def checkWin():
 	return winStatus
 
 def main():
+	global conArray
 	winStatus = -1
 	printBoard()
 	print("                  Welcome to Connect 4! Player goes first, and will be represented by an \"X\". Have fun!")
@@ -166,7 +206,6 @@ def main():
 		if playAgain != 0 and playAgain != 1:
 			print("                                               That's not a 0 or a 1!")
 		elif playAgain == 0:
-			global conArray
 			conArray = [
 			[" "," "," "," "," "," "," "],
 			[" "," "," "," "," "," "," "],
