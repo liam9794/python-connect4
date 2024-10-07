@@ -11,6 +11,8 @@ conArray = [
 [" "," "," "," "," "," "," "]
 ]
 
+
+
 def printBoard():
 	os.system('cls')
 	print("\n\n\n\n\n")
@@ -30,9 +32,9 @@ def checkOpen(choice):
 			return x
 	return -1
 
-def intTest():
+def intTest(textToDisplay):
 	try:
-		val = int(input("                    Pick a number 1 - 7 to indicate which column you want to drop your token into: "))
+		val = int(input(textToDisplay))
 		return val
 	except:
 		printBoard()
@@ -42,12 +44,12 @@ def intTest():
 def playerTurn():
 	row = -1
 	while row == -1:
-		choice = intTest()
+		choice = intTest("                    Pick a number 1 - 7 to indicate which column you want to drop your token into: ")
 		while choice < 1 or choice > 7:
 			if choice != -777333:
 				printBoard()
 				print("                                          Your number is not within 1 and 7")
-			choice = intTest()
+			choice = intTest("                    Pick a number 1 - 7 to indicate which column you want to drop your token into: ")
 		choice = choice - 1
 		row = checkOpen(choice)
 		if row == -1:
@@ -117,6 +119,14 @@ def checkDiag():
 		return winStatus
 	return -1
 
+def checkTie():
+	for x in range(6):
+		for y in range(7):
+			if conArray[x][y] == " ":
+				return -1
+	return 2
+
+
 def checkWin():
 	winStatus = checkVert()
 	if winStatus == 0 or winStatus == 1:
@@ -127,23 +137,46 @@ def checkWin():
 	winStatus = checkDiag()
 	if winStatus == 0 or winStatus == 1:
 		return winStatus
-	# Check for a tie, too
+	winStatus = checkTie()
 	return winStatus
 
-winStatus = -1
-printBoard()
-print("                  Welcome to Connect 4! Player goes first, and will be represented by an \"X\". Have fun!")
-while winStatus != 0 and winStatus != 1:
-	playerTurn()
+def main():
+	winStatus = -1
 	printBoard()
-	winStatus = checkWin()
+	print("                  Welcome to Connect 4! Player goes first, and will be represented by an \"X\". Have fun!")
+	while winStatus != 0 and winStatus != 1 and winStatus != 2:
+		playerTurn()
+		printBoard()
+		winStatus = checkWin()
+		if winStatus == 0 or winStatus == 1 or winStatus == 2:
+			break
+		computerTurn()
+		printBoard()
+		winStatus = checkWin()
 	if winStatus == 0:
-		break
-	computerTurn()
-	printBoard()
-	winStatus = checkWin()
+		print("                                             Congratulations! You won!!!")
+	elif winStatus == 1:
+		print("                                Oh no! The computer beat you! Better luck next time!!!")
+	elif winStatus == 2:
+		print("                              Game over! All spots are filled, so the game ends in a tie!")
 
-if winStatus == 0:
-	print("                                             Congratulations! You won!!!")
-elif winStatus == 1:
-	print("                                Oh no! The computer beat you! Better luck next time!!!")
+	playAgain = -1
+	while playAgain != 0 and playAgain != 1:
+		playAgain = intTest("                        Would you like to play again? Enter 0 to play again, or 1 to quit: ")
+		if playAgain != 0 and playAgain != 1:
+			print("                                               That's not a 0 or a 1!")
+		elif playAgain == 0:
+			global conArray
+			conArray = [
+			[" "," "," "," "," "," "," "],
+			[" "," "," "," "," "," "," "],
+			[" "," "," "," "," "," "," "],
+			[" "," "," "," "," "," "," "],
+			[" "," "," "," "," "," "," "],
+			[" "," "," "," "," "," "," "]
+			]
+			main()
+		elif playAgain == 1:
+			break
+
+main()
